@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="color-scheme" content="light dark">
+    <title>Preview • Pico CSS</title>
+    <meta name="description" content="A pure HTML example, without dependencies.">
+
+    <!-- Pico.css -->
+    <link
+      rel="stylesheet"
+      href="pico.min.css"
+    >
+  </head>
+
+  <body>
+    <!-- Header -->
+    <header class="container">
+      <hgroup>
+        <h1>RetroArch Assets Server</h1>
+      </hgroup>
+    </header>
+    <!-- ./ Header -->
+
+    <!-- Main -->
+    <main class="container">
+      <section id="usage">
+        <h2>Usage</h2>
+
+		<ol>
+			<li>Open <strong>RetroArch</strong> and go to <strong>Online Updater &gt; Updater Settings</strong>.</li>
+			<li>
+				Set <strong>Build-bot Assets URL</strong> to:
+			</li>
+				<input type="text" id="assets-url" name="text" placeholder="Text" readonly>
+				<script>
+					document.getElementById('assets-url').value = window.location.origin;
+					function copyAssetsUrl() {
+						const input = document.getElementById('assets-url');
+						input.select();
+						input.setSelectionRange(0, 1000); // Mobile?
+						document.execCommand('copy');
+					}
+				</script>
+				<button type="button" onclick="copyAssetsUrl()">Copy URL</button>
+		</ol>
+
+      </section>
+	</main>
+
+    <footer class="container">
+      <small><strong>Source:</strong> <a href="https://github.com/robloach/retroarch-assets-server">RetroArch Assets Server</a></small>
+    </footer>
+  </body>
+</html>

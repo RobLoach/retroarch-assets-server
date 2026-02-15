@@ -1,0 +1,4 @@
+[submodule "src/system"]
+	path = src/system
+	url = https://github.com/Abdess/retroarch_system.git
+	ignore = dirty

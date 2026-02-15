@@ -1,0 +1,8 @@
+/vendor
+.index
+.index-dirs
+.index-extended
+/public/system
+/public/frontend
+/public/pico.min.css
+/public/.htaccess
