@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="color-scheme" content="light dark">
-    <title>Preview • Pico CSS</title>
-    <meta name="description" content="A pure HTML example, without dependencies.">
+    <title>RetroArch Assets Server</title>
+    <meta name="description" content="Self-hosted RetroArch assets server for serving system files, cores, and frontend assets.">
 
     <!-- Pico.css -->
     <link
@@ -37,10 +37,7 @@
 				<script>
 					document.getElementById('assets-url').value = window.location.origin;
 					function copyAssetsUrl() {
-						const input = document.getElementById('assets-url');
-						input.select();
-						input.setSelectionRange(0, 1000); // Mobile?
-						document.execCommand('copy');
+						navigator.clipboard.writeText(window.location.origin);
 					}
 				</script>
 				<button type="button" onclick="copyAssetsUrl()">Copy URL</button>

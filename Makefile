@@ -1,3 +1,5 @@
+.PHONY: build clean update frontend
+
 build: src/system/README.md public/pico.min.css frontend
 	./build.sh
 
