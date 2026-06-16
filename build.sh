@@ -1,6 +1,12 @@
 #!/bin/bash
 
-# Script to zip each subfolder in 'system' and place the zip in '../system'
+# Builds the assets server:
+#   - zips each subfolder of src/system into public/system
+#   - downloads the ScummVM system files
+#   - generates the .index / .index-dirs / .index-extended files RetroArch reads
+#
+# The frontend assets (assets.zip, overlays.zip, ...) are downloaded by the
+# Makefile's `frontend` target, so run `make` for a complete build (see README).
 
 set -e
 
@@ -27,13 +33,24 @@ done
 echo ""
 echo "Index Files"
 echo "-----------"
+mkdir -p public/cores public/frontend public/system
 for target in public/cores public/frontend public/system; do
 	find "$target" -type d | while read -r d; do
 		(
-			echo "$target/$d"
+			echo "$d"
 			cd "$d"
 			find . -mindepth 1 -maxdepth 1 -type d -printf '%P\n' | sort > .index-dirs
 			find . -mindepth 1 -maxdepth 1 -type f ! -name '.*' -printf '%P\n' | sort > .index
+
+			# Cores also need .index-extended (date + CRC-32 of the file *inside*
+			# each zip) so RetroArch's Core Updater can detect changed cores.
+			if [ "$target" = "public/cores" ]; then
+				: > .index-extended
+				find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -printf '%P\n' | sort | while read -r zip; do
+					crc=$(unzip -v "$zip" | awk '$1 ~ /^[0-9]+$/ { print $7; exit }')
+					printf '%s %s %s\n' "$(date -r "$zip" +%Y-%m-%d)" "$crc" "$zip" >> .index-extended
+				done
+			fi
 		)
 	done
 done

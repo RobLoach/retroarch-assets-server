@@ -16,12 +16,17 @@ Implementation of RetroArch's Build-Bot Assets Server.
 
 3. Put any of your own content into the `public/cores` directory
 
-4. Run the Build script
+4. Build everything
    ```sh
-   ./build.sh
+   make
    ```
 
 5. Point your web server at the `public` directory
+
+6. Set up a cronjob to rebuild the indexes
+   ```sh
+   make update
+   ```
 
 ## Usage
 
