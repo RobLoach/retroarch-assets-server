@@ -28,23 +28,43 @@
       <section id="usage">
         <h2>Usage</h2>
 
-		<ol>
-			<li>Open <strong>RetroArch</strong> and go to <strong>Online Updater &gt; Updater Settings</strong>.</li>
-			<li>
-				Set <strong>Build-bot Assets URL</strong> to:
-			</li>
-				<input type="text" id="assets-url" name="text" placeholder="Text" readonly>
-				<script>
-					document.getElementById('assets-url').value = window.location.origin;
-					function copyAssetsUrl() {
-						navigator.clipboard.writeText(window.location.origin);
-					}
-				</script>
-				<button type="button" onclick="copyAssetsUrl()">Copy URL</button>
-		</ol>
+        <ol>
+          <li>Open <strong>RetroArch</strong> and go to <strong>Online Updater &gt; Updater Settings</strong>.</li>
+          <li>
+            Set <strong>Build-bot Assets URL</strong> to:
+            <input type="text" id="assets-url" aria-label="Build-bot Assets URL" readonly>
+            <button type="button" id="copy-url">Copy URL</button>
+          </li>
+        </ol>
 
+        <script>
+          (function () {
+            // Include the path so deployments under a subdirectory get the right URL.
+            var assetsUrl = (window.location.origin + window.location.pathname)
+              .replace(/index\.html$/, '')
+              .replace(/\/+$/, '');
+            var input = document.getElementById('assets-url');
+            var button = document.getElementById('copy-url');
+            input.value = assetsUrl;
+            button.addEventListener('click', function () {
+              function done() {
+                button.textContent = 'Copied!';
+                setTimeout(function () { button.textContent = 'Copy URL'; }, 2000);
+              }
+              // Select the text so a manual copy still works when no clipboard
+              // API is available (e.g. plain HTTP on a LAN).
+              input.focus();
+              input.select();
+              if (navigator.clipboard && window.isSecureContext) {
+                navigator.clipboard.writeText(assetsUrl).then(done);
+              } else if (document.execCommand('copy')) {
+                done();
+              }
+            });
+          })();
+        </script>
       </section>
-	</main>
+    </main>
 
     <footer class="container">
       <small><strong>Source:</strong> <a href="https://github.com/robloach/retroarch-assets-server">RetroArch Assets Server</a></small>
