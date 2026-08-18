@@ -4,9 +4,10 @@ build: src/system/README.md public/pico.min.css frontend
 	./build.sh
 
 clean:
-	rm -rf frontend system public/pico.min.css
-	find . -type f -name .index -delete
-	find . -type f -name .index-dirs -delete
+	rm -rf public/frontend public/system public/pico.min.css
+	find public -type f -name .index -delete
+	find public -type f -name .index-dirs -delete
+	find public -type f -name .index-extended -delete
 
 update: clean build
 

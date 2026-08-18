@@ -22,8 +22,14 @@ for dir in "$SYSTEM_SRC"/*/; do
 	if [ "$folder_name" = "ScummVM" ]; then
 		continue
 	fi
-	echo "- $folder_name"
-	[ ! -f "$SYSTEM_OUT/$folder_name.zip" ] && zip -r "$SYSTEM_OUT/$folder_name.zip" -j "$dir"
+	zip_file="$SYSTEM_OUT/$folder_name.zip"
+	# Rebuild when the zip is missing or any source file is newer than it,
+	# so a submodule update actually refreshes the served zips.
+	if [ ! -f "$zip_file" ] || [ -n "$(find "$dir" -newer "$zip_file" -print -quit)" ]; then
+		echo "- $folder_name"
+		rm -f "$zip_file"
+		zip -r "$zip_file" -j "$dir"
+	fi
 done
 
 # System: ScummVM
