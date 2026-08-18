@@ -8,15 +8,24 @@
 # The frontend assets (assets.zip, overlays.zip, ...) are downloaded by the
 # Makefile's `frontend` target, so run `make` for a complete build (see README).
 
-set -e
+set -euo pipefail
+
+for cmd in zip unzip curl; do
+	command -v "$cmd" >/dev/null 2>&1 || { echo "error: '$cmd' is required but not installed" >&2; exit 1; }
+done
+
+# Modification date of a file as %Y-%m-%d, on GNU or BSD userland.
+file_date() {
+	date -r "$1" +%Y-%m-%d 2>/dev/null || stat -f %Sm -t %Y-%m-%d "$1"
+}
+
+mkdir -p public/cores public/frontend public/system
 
 # System Directory
 echo "System Directory"
 echo "----------------"
 SYSTEM_SRC="src/system"
 SYSTEM_OUT="public/system"
-
-mkdir -p "$SYSTEM_OUT"
 for dir in "$SYSTEM_SRC"/*/; do
 	folder_name=$(basename "$dir")
 	if [ "$folder_name" = "ScummVM" ]; then
@@ -44,9 +53,8 @@ fi
 echo ""
 echo "Index Files"
 echo "-----------"
-mkdir -p public/cores public/frontend public/system
 for target in public/cores public/frontend public/system; do
-	find "$target" -type d | while read -r d; do
+	while IFS= read -r d; do
 		(
 			echo "$d"
 			cd "$d"
@@ -57,16 +65,16 @@ for target in public/cores public/frontend public/system; do
 			# each zip) so RetroArch's Core Updater can detect changed cores.
 			if [ "$target" = "public/cores" ]; then
 				: > .index-extended
-				find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -printf '%P\n' | sort | while read -r zip; do
-					crc=$(unzip -v "$zip" | awk '$1 ~ /^[0-9]+$/ { print $7; exit }')
-					printf '%s %s %s\n' "$(date -r "$zip" +%Y-%m-%d)" "$crc" "$zip" >> .index-extended
-				done
+				while IFS= read -r zip; do
+					# A core zip holds a single file; take the first entry's CRC.
+					crc=$(unzip -v "$zip" | awk '$1 ~ /^[0-9]+$/ && !found { found = 1; print $7 }')
+					if [ -z "$crc" ]; then
+						echo "warning: no CRC found in $d/$zip, skipping" >&2
+						continue
+					fi
+					printf '%s %s %s\n' "$(file_date "$zip")" "$crc" "$zip" >> .index-extended
+				done < <(find . -mindepth 1 -maxdepth 1 -type f -name '*.zip' -printf '%P\n' | sort)
 			fi
 		)
-	done
+	done < <(find "$target" -type d)
 done
-
-# Trim all .index and .index-dirs files
-# find public -type f \( -name ".index" -o -name ".index-dirs" \) | while read -r idxfile; do
-# 	sed -i 's/^[ \t]*//;s/[ \t]*$//' "$idxfile"
-# done
