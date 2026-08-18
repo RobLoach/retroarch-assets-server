@@ -9,11 +9,11 @@ FRONTEND_ZIPS = assets autoconfig cheats database-cursors database-rdb \
 # Drop partially-downloaded targets when curl fails.
 .DELETE_ON_ERROR:
 
-build: src/system/README.md public/pico.min.css frontend
+build: src/system/README.md frontend
 	./build.sh
 
 clean:
-	rm -rf public/frontend public/system public/pico.min.css
+	rm -rf public/frontend public/system
 	find public -type f -name .index -delete
 	find public -type f -name .index-dirs -delete
 	find public -type f -name .index-extended -delete
@@ -22,9 +22,6 @@ update: clean build
 
 src/system/README.md:
 	git submodule update --init
-
-public/pico.min.css:
-	$(CURL) -o "$@" "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 
 frontend: $(FRONTEND_ZIPS:%=public/frontend/%.zip)
 
