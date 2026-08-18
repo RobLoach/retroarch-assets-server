@@ -1,4 +1,13 @@
+CURL = curl -fL --retry 3 --connect-timeout 15
+
+FRONTEND_URL = https://buildbot.libretro.com/assets/frontend
+FRONTEND_ZIPS = assets autoconfig cheats database-cursors database-rdb \
+	glui_minimal_assets info overlays shaders_cg shaders_glsl shaders_slang
+
 .PHONY: build clean update frontend
+
+# Drop partially-downloaded targets when curl fails.
+.DELETE_ON_ERROR:
 
 build: src/system/README.md public/pico.min.css frontend
 	./build.sh
@@ -15,53 +24,13 @@ src/system/README.md:
 	git submodule update --init
 
 public/pico.min.css:
-	curl -L -o "public/pico.min.css" "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
+	$(CURL) -o "$@" "https://cdn.jsdelivr.net/npm/@picocss/pico@2/css/pico.min.css"
 
-frontend: public/frontend/assets.zip \
-	public/frontend/autoconfig.zip \
-	public/frontend/cheats.zip \
-	public/frontend/database-cursors.zip \
-	public/frontend/database-rdb.zip \
-	public/frontend/glui_minimal_assets.zip \
-	public/frontend/info.zip \
-	public/frontend/overlays.zip \
-	public/frontend/shaders_cg.zip \
-	public/frontend/shaders_glsl.zip \
-	public/frontend/shaders_slang.zip \
+frontend: $(FRONTEND_ZIPS:%=public/frontend/%.zip)
 
 public/frontend:
 	mkdir -p public/frontend
 
-public/frontend/assets.zip: public/frontend
-	curl -L -o "public/frontend/assets.zip" "https://buildbot.libretro.com/assets/frontend/assets.zip"
-
-public/frontend/autoconfig.zip: public/frontend
-	curl -L -o "public/frontend/autoconfig.zip" "https://buildbot.libretro.com/assets/frontend/autoconfig.zip"
-
-public/frontend/cheats.zip: public/frontend
-	curl -L -o "public/frontend/cheats.zip" "https://buildbot.libretro.com/assets/frontend/cheats.zip"
-
-public/frontend/database-cursors.zip: public/frontend
-	curl -L -o "public/frontend/database-cursors.zip" "https://buildbot.libretro.com/assets/frontend/database-cursors.zip"
-
-public/frontend/database-rdb.zip: public/frontend
-	curl -L -o "public/frontend/database-rdb.zip" "https://buildbot.libretro.com/assets/frontend/database-rdb.zip"
-
-public/frontend/glui_minimal_assets.zip: public/frontend
-	curl -L -o "public/frontend/glui_minimal_assets.zip" "https://buildbot.libretro.com/assets/frontend/glui_minimal_assets.zip"
-
-public/frontend/info.zip: public/frontend
-	curl -L -o "public/frontend/info.zip" "https://buildbot.libretro.com/assets/frontend/info.zip"
-
-public/frontend/overlays.zip: public/frontend
-	curl -L -o "public/frontend/overlays.zip" "https://buildbot.libretro.com/assets/frontend/overlays.zip"
-
-public/frontend/shaders_cg.zip: public/frontend
-	curl -L -o "public/frontend/shaders_cg.zip" "https://buildbot.libretro.com/assets/frontend/shaders_cg.zip"
-
-public/frontend/shaders_glsl.zip: public/frontend
-	curl -L -o "public/frontend/shaders_glsl.zip" "https://buildbot.libretro.com/assets/frontend/shaders_glsl.zip"
-
-public/frontend/shaders_slang.zip: public/frontend
-	curl -L -o "public/frontend/shaders_slang.zip" "https://buildbot.libretro.com/assets/frontend/shaders_slang.zip"
+public/frontend/%.zip: | public/frontend
+	$(CURL) -o "$@" "$(FRONTEND_URL)/$*.zip"
 

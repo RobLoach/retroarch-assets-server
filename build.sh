@@ -33,7 +33,12 @@ for dir in "$SYSTEM_SRC"/*/; do
 done
 
 # System: ScummVM
-[ ! -f "$SYSTEM_OUT/ScummVM.zip" ] && curl -L -o "$SYSTEM_OUT/ScummVM.zip" "https://buildbot.libretro.com/assets/system/ScummVM.zip"
+# Download to a temp file so a failed transfer never leaves a partial zip
+# behind that would be mistaken for a complete one on the next run.
+if [ ! -f "$SYSTEM_OUT/ScummVM.zip" ]; then
+	curl -fL --retry 3 --connect-timeout 15 -o "$SYSTEM_OUT/ScummVM.zip.part" "https://buildbot.libretro.com/assets/system/ScummVM.zip"
+	mv "$SYSTEM_OUT/ScummVM.zip.part" "$SYSTEM_OUT/ScummVM.zip"
+fi
 
 # Index Files
 echo ""
