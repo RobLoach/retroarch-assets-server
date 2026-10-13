@@ -64,6 +64,40 @@
           })();
         </script>
       </section>
+
+      <section id="browse">
+        <h2>Browse</h2>
+        <p>The content this server is offering right now.</p>
+
+        <nav aria-label="breadcrumb">
+          <ul id="browse-breadcrumb"></ul>
+        </nav>
+
+        <div class="overflow-auto">
+          <table id="browse-table" hidden>
+            <thead>
+              <tr>
+                <th scope="col">Name</th>
+                <th scope="col">Updated</th>
+                <th scope="col">CRC-32</th>
+              </tr>
+            </thead>
+            <tbody id="browse-list"></tbody>
+          </table>
+        </div>
+
+        <p id="browse-status" aria-live="polite"></p>
+
+        <nav id="browse-pager" aria-label="Pagination" hidden>
+          <ul>
+            <li><button type="button" id="browse-prev">&laquo; Previous</button></li>
+            <li><small id="browse-page"></small></li>
+            <li><button type="button" id="browse-next">Next &raquo;</button></li>
+          </ul>
+        </nav>
+
+        <script src="browse.js"></script>
+      </section>
     </main>
 
     <footer class="container">
