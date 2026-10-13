@@ -34,6 +34,8 @@ Within RetroArch...
 1. Visit Online Updater > Updater Settings
 2. Set "Build-bot Assets URL" to where your server is
 
+Open the server in a web browser to browse the content it's serving.
+
 ## License
 
 [MIT](LICENSE)
