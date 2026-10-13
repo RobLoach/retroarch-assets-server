@@ -33,6 +33,7 @@ Implementation of RetroArch's Build-Bot Assets Server.
 Within RetroArch...
 1. Visit Online Updater > Updater Settings
 2. Set "Build-bot Assets URL" to where your server is
+3. Disable "Automatically Extract Downloaded Archive"
 
 ## License
 
