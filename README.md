@@ -21,7 +21,7 @@ Implementation of RetroArch's Build-Bot Assets Server.
    make
    ```
 
-5. Point your web server at the `public` directory
+5. Point your web server at the `public` directory. Apache works out of the box via `public/.htaccess`; for nginx or Caddy, see [docs/nginx.conf](docs/nginx.conf) or [docs/Caddyfile](docs/Caddyfile)
 
 6. Set up a cronjob to rebuild the indexes
    ```sh
