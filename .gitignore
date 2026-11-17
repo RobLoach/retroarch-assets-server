@@ -3,4 +3,4 @@
 .index-dirs
 .index-extended
 /public/system
-/public/frontend
+/public/frontend.index*.tmp
